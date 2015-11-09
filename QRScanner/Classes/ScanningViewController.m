@@ -9,6 +9,7 @@
 #import "ScanningViewController.h"
 
 @interface ScanningViewController ()
+
 @property (nonatomic) Boolean isReading;
 @property (nonatomic, strong) AVCaptureSession *captureSession;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *videoPreviewLayer;
@@ -17,11 +18,14 @@
 - (BOOL)startReading;
 - (void)stopReading;
 - (void)loadBeepSound;
+
 @end
 
 @implementation ScanningViewController
 
 @synthesize dataRows, recipeNameLabel, statusLabel, viewPreview, startStopButton;
+
+#pragma mark - Initialisation
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -62,11 +66,12 @@
 }
 
 - (BOOL)startReading {
+    [self.recipeNameLabel performSelectorOnMainThread:@selector(setText:) withObject:@"Looking for Code" waitUntilDone:NO];
+
     NSError *error;
-    
     AVCaptureDevice *captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    
     AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice error:&error];
+    
     if (!input) {
         NSLog(@"%@", [error localizedDescription]);
         return NO;
@@ -74,10 +79,8 @@
     
     _captureSession = [[AVCaptureSession alloc] init];
     [_captureSession addInput:input];
-    
     AVCaptureMetadataOutput *captureMetadataOutput = [[AVCaptureMetadataOutput alloc] init];
     [_captureSession addOutput:captureMetadataOutput];
-    
     dispatch_queue_t dispatchQueue;
     dispatchQueue = dispatch_queue_create("myQueue", NULL);
     [captureMetadataOutput setMetadataObjectsDelegate:self queue:dispatchQueue];
@@ -87,7 +90,6 @@
     [_videoPreviewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
     [_videoPreviewLayer setFrame:self.viewPreview.layer.bounds];
     [self.viewPreview.layer addSublayer:self.videoPreviewLayer];
-    
     [_captureSession startRunning];
     
     return YES;
@@ -95,10 +97,8 @@
 
 -(void)stopReading{
     self.startStopButton.titleLabel.text = @"Start Scanning";
-
     [_captureSession stopRunning];
     _captureSession = nil;
-    
     [_videoPreviewLayer removeFromSuperlayer];
 }
 
@@ -107,18 +107,15 @@
         AVMetadataMachineReadableCodeObject *metadataObj = [metadataObjects objectAtIndex:0];
         if ([[metadataObj type] isEqualToString:AVMetadataObjectTypeQRCode]) {
             [self.statusLabel performSelectorOnMainThread:@selector(setText:) withObject:[metadataObj stringValue] waitUntilDone:NO];
-            
+            [self.recipeNameLabel performSelectorOnMainThread:@selector(setText:) withObject:@"Contacting Salesforce" waitUntilDone:NO];
+
             NSString *query = [NSString stringWithFormat:@"SELECT Name FROM Recipe__c WHERE Recipe__c.Key_Ingredients__c LIKE '%%%@%%' LIMIT 1", [metadataObj stringValue]];
-            
             NSLog(@"Query is %@", query);
-            
             //Here we use a query that should work on either Force.com or Database.com
             SFRestRequest *request = [[SFRestAPI sharedInstance] requestForQuery:query];
             [[SFRestAPI sharedInstance] send:request delegate:self];
-            
             [self performSelectorOnMainThread:@selector(stopReading) withObject:nil waitUntilDone:NO];
             _isReading = NO;
-            
             if(_audioPlayer) {
                 [_audioPlayer play];
             }
@@ -161,6 +158,8 @@
     NSLog(@"requestDidTimeout: %@", request);
     //add your failed error handling here
 }
+
+#pragma mark - Memory Stuff
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
