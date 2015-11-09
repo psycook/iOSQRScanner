@@ -1,0 +1,25 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "0566dfbf-bb30-0410-a477-a3ae38949edd",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "0566dfbf-bb30-0410-a477-a3ae38949edd" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "0566dfbf-bb30-0410-a477-a3ae38949edd" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "93259963-1F33-4047-BC0A-A2F758B69402",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "0566dfbf-bb30-0410-a477-a3ae38949edd" : "Development\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "QRScanner",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Salesforce\/QRScanner\/QRScanner.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "http:\/\/dev.icreateditfirst.com:8080\/svn\/arkworld",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "0566dfbf-bb30-0410-a477-a3ae38949edd"
+    }
+  ]
+}
